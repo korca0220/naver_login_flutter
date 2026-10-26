@@ -137,7 +137,8 @@ public class FlutterNaverLoginPlugin: NSObject, FlutterPlugin, FlutterSceneLifeC
             }
             handleInitSdk(args)
         case .logIn:
-            handleLogin()
+            let reauthenticate = (call.arguments as? [String: Any])?["reauthenticate"] as? Bool ?? false
+            handleLogin(reauthenticate: reauthenticate)
         case .logOut:
             handleLogout()
         case .logoutAndDeleteToken:
@@ -224,8 +225,13 @@ public class FlutterNaverLoginPlugin: NSObject, FlutterPlugin, FlutterSceneLifeC
         sendResult(status: .loggedOut)
     }
 
-    private func handleLogin() {
-        NidOAuth.shared.requestLogin { [weak self] result in
+    private func handleLogin(reauthenticate: Bool) {
+        // reauthenticate는 auth_type=reauthenticate로 로그인 화면을 다시 띄워,
+        // 브라우저에 남은 네이버 세션 대신 다른 계정으로 로그인할 수 있게 한다.
+        let requestLogin: (@escaping NidOAuth.LoginResultCompletion) -> Void = reauthenticate
+            ? NidOAuth.shared.reauthenticate(callback:)
+            : NidOAuth.shared.requestLogin(callback:)
+        requestLogin { [weak self] result in
             switch result {
             case .success(let loginResult):
                 let tokenInfo: [String: Any] = [
