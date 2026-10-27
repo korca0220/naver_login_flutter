@@ -39,9 +39,7 @@ class FlutterNaverLogin {
   /// 성공 시 [NaverLoginResult]를 반환하며, 이는 로그인 상태와 사용자 정보를 포함합니다.
   /// 실패 시 에러 메시지가 포함된 [NaverLoginResult]를 반환합니다.
   ///
-  /// [reauthenticate]가 `true`이면 네이버 재인증(`auth_type=reauthenticate`)을 요청합니다.
-  /// 웹 로그인은 기기 브라우저의 네이버 세션을 공유하므로, 기본값으로는 브라우저에 로그인된
-  /// 계정으로 로그인 화면 없이 완료됩니다. 재인증을 요청하면 로그인 화면이 다시 표시되어
+  /// [reauthenticate]가 `true`이면 로그인 화면을 다시 띄워, 브라우저에 로그인된 계정 대신
   /// 다른 계정으로 로그인할 수 있습니다.
   static Future<NaverLoginResult> logIn({bool reauthenticate = false}) {
     return FlutterNaverLoginPlatform.instance.logIn(
